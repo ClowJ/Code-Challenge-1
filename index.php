@@ -71,7 +71,6 @@
                     command: $(e.target).prop('id')
                 }
             }).done(function(data, textStatus, xhr) {
-                console.debug(data);
                 var output = '';
                 if(data.success){
                     switch(data.command){
@@ -80,25 +79,25 @@
                             $('.btn.move').prop('disabled', false);
                             $('.btn.report').prop('disabled', false);
                             $('.card.display .card-body p.card-text').remove();
-                            output = 'PLACE '+data.location.x+','+data.location.y+','+fText[data.location.f]+'['+data.location.f+']';
+                            output = 'PLACE '+data.location.x+','+data.location.y+','+fText[data.location.f];
                             break;
                         case 'move':
                             output = 'MOVE';
-                            output = output+' '+data.location.x+','+data.location.y+','+fText[data.location.f]+'['+data.location.f+']';
+                            output = output;
                             break;
                         case 'left':
                             output = 'LEFT';
-                            output = output+' '+data.location.x+','+data.location.y+','+fText[data.location.f]+'['+data.location.f+']';
+                            output = output;
                             break;
                         case 'right':
                             output = 'RIGHT';
-                            output = output+' '+data.location.x+','+data.location.y+','+fText[data.location.f]+'['+data.location.f+']';
+                            output = output;
                             break;
                         case 'report':
                             $('.btn.place').prop('disabled', false);
                             $('.btn.move').prop('disabled', true);
                             $('.btn.report').prop('disabled', true);
-                            output = 'RERPORT</p><p class="card-text">Output:'+data.location.x+','+data.location.x+','+fText[data.location.f]+'['+data.location.f+']';
+                            output = 'RERPORT</p><p class="card-text">Output:'+data.location.x+','+data.location.y+','+fText[data.location.f];
                             break;
                     }
                     $('.card.display .card-body').append('<p class="card-text">'+output+'</p>');
