@@ -27,17 +27,19 @@ switch($post_command){
         break;
     case 'move':
         error_log('COMMAND : move');
+        $location = load();
+        
+        //Move pacman and Save location
+        $location = move($location);
 
-        //Store Location to FILE
-        save($location);
         //Make output text
-        $output = 'MOVE';
+        $output = 'MOVE '.$location['x'].','.$location['y'].','.$fText[$location['f']];
         break;
     case 'left':
         error_log('COMMAND : left');
 
         //Store Location to FILE
-        save($location);
+        // save($location);
         //Make output text
         $output = 'LEFT';
         break;
@@ -45,7 +47,7 @@ switch($post_command){
         error_log('COMMAND : right');
 
         //Store Location to FILE
-        save($location);
+        // save($location);
         //Make output text
         $output = 'RIGHT';
         break;
@@ -53,7 +55,7 @@ switch($post_command){
         error_log('COMMAND : report');
 
         //Store Location to FILE
-        save($location);
+        // save($location);
         //Make output text
         $output = 'REPORT<br/>Output: 0,0,WEST';
         break;
@@ -69,9 +71,45 @@ if($output != ''){
 }
 
 /**
+ * MOVE PACMAN
+ * @return array $location[x, y, f]
+ */
+function move($location){
+    //Move location following the direction
+    switch($location['f']){
+        case 0:
+            $location['y'] -= 1;
+            break;
+        case 1:
+            $location['x'] += 1;
+            break;
+        case 2:
+            $location['y'] += 1;
+            break;
+        case 3:
+            $location['x'] -= 1;
+            break;
+    }
+
+    //Store Location to FILE
+    save($location);
+    
+    return $location;
+}
+
+/**
  * SAVE FILE
+ * @param array $location
  */
 function save($location){
     file_put_contents('json/location.json', json_encode($location));
+}
+/**
+ * LOAD FILE
+ * @return array $location[x, y, f]
+ */
+function load(){
+    $location = file_get_contents('json/location.json');
+    return json_decode($location, true);
 }
 ?>
