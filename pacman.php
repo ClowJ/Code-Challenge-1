@@ -48,7 +48,7 @@ switch($post_command){
 if(is_array($location)){
     echo json_encode(['success' => true, 'command' => $post_command, 'location' => $location]);
 }else{
-    echo json_encode(['success' => false, 'message' => 'location error']);
+    echo json_encode(['success' => false, 'message' => 'Pacman cannot move toward.']);
 }
 exit();
 
@@ -62,21 +62,39 @@ function move(){
     //Move location following the direction
     switch($location['f']){
         case 0:
-            $location['y'] += 1;
+            if($location['y'] < 4){
+                $location['y'] += 1;
+            }else{
+                $location = null;
+            }
             break;
         case 1:
-            $location['x'] += 1;
+            if($location['x'] < 4){
+                $location['x'] += 1;
+            }else{
+                $location = null;
+            }
             break;
         case 2:
-            $location['y'] -= 1;
+            if($location['y'] > 0){
+                $location['y'] -= 1;
+            }else{
+                $location = null;
+            }
             break;
         case 3:
-            $location['x'] -= 1;
+            if($location['x'] < 0){
+                $location['x'] -= 1;
+            }else{
+                $location = null;
+            }
             break;
     }
 
     //Store Location to FILE
-    save($location);
+    if($location != null){
+        save($location);
+    }
     
     return $location;
 }
