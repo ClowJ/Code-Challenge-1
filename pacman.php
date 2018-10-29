@@ -27,10 +27,9 @@ switch($post_command){
         break;
     case 'move':
         error_log('COMMAND : move');
-        $location = load();
         
         //Move pacman and Save location
-        $location = move($location);
+        $location = move();
 
         //Make output text
         $output = 'MOVE '.$location['x'].','.$location['y'].','.$fText[$location['f']];
@@ -38,18 +37,20 @@ switch($post_command){
     case 'left':
         error_log('COMMAND : left');
 
-        //Store Location to FILE
-        // save($location);
+        //Turn pacman and Save location
+        $location = turn('left');
+
         //Make output text
-        $output = 'LEFT';
+        $output = 'LEFT '.$location['x'].','.$location['y'].','.$fText[$location['f']].'['.$location['f'].']';
         break;
     case 'right':
         error_log('COMMAND : right');
 
-        //Store Location to FILE
-        // save($location);
+        //Turn pacman and Save location
+        $location = turn('right');
+
         //Make output text
-        $output = 'RIGHT';
+        $output = 'RIGHT '.$location['x'].','.$location['y'].','.$fText[$location['f']].'['.$location['f'].']';
         break;
     case 'report':
         error_log('COMMAND : report');
@@ -74,20 +75,54 @@ if($output != ''){
  * MOVE PACMAN
  * @return array $location[x, y, f]
  */
-function move($location){
+function move(){
+    $location = load();
+
     //Move location following the direction
     switch($location['f']){
         case 0:
-            $location['y'] -= 1;
+            $location['y'] += 1;
             break;
         case 1:
             $location['x'] += 1;
             break;
         case 2:
-            $location['y'] += 1;
+            $location['y'] -= 1;
             break;
         case 3:
             $location['x'] -= 1;
+            break;
+    }
+
+    //Store Location to FILE
+    save($location);
+    
+    return $location;
+}
+
+/**
+ * TURN PACMAN
+ * @param string $input : 'left' or 'right'
+ * @return array $location[x, y, f]
+ */
+function turn($input){
+    $location = load();
+
+    //Move location following the direction
+    switch($input){
+        case 'left':
+            if($location['f'] > 0){
+                $location['f'] -= 1;
+            }else{
+                $location['f'] = 3;
+            }
+            break;
+        case 'right':
+            if($location['f'] < 3){
+                $location['f'] += 1;
+            }else{
+                $location['f'] = 0;
+            }
             break;
     }
 
@@ -109,6 +144,10 @@ function save($location){
  * @return array $location[x, y, f]
  */
 function load(){
+    $location = file_get_contents('json/location.json');
+    $location = json_decode($location, true);
+    error_log('X:'.$location['x'].'|Y:'.$location['y'].'|F:'.$location['f']);
+
     $location = file_get_contents('json/location.json');
     return json_decode($location, true);
 }
